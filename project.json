@@ -1,0 +1,23 @@
+{
+  "overview": "A complete personal portfolio website for Maulya Soni, an AI/ML engineer and Full Stack developer, featuring 10 sections with animations, dark/light mode, and project showcase.",
+  "features": [
+    "Sticky navbar with dark/light mode toggle and mobile hamburger menu",
+    "Hero section with typewriter effect cycling through roles and animated stats",
+    "Technical skills grouped as pill badges by category",
+    "6 project cards with filter tabs (All, ML, Gen AI, Web Dev)",
+    "Experience timeline, education cards, certifications section",
+    "Contact form with split layout and social links",
+    "Framer Motion scroll-reveal animations throughout",
+    "Fully responsive mobile-first design"
+  ],
+  "category": "portfolio",
+  "tags": [
+    "portfolio",
+    "personal-website",
+    "ai-ml",
+    "framer-motion",
+    "dark-mode",
+    "responsive"
+  ],
+  "last_updated": "2026-05-21T21:07:55.496Z"
+}

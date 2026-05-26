@@ -57,10 +57,42 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    // Simulated send — integrate Formspree or EmailJS here
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    setStatus("sent");
-    setForm({ name: "", email: "", subject: "", message: "" });
+
+    try {
+      const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+      
+      const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          service_id: EMAILJS_SERVICE_ID,
+          template_id: EMAILJS_TEMPLATE_ID,
+          user_id: EMAILJS_PUBLIC_KEY,
+          template_params: {
+            from_name: form.name,
+            reply_to: form.email,
+            subject: form.subject,
+            message: form.message,
+          }
+        }),
+      });
+
+      if (response.ok) {
+        setStatus("sent");
+        setForm({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setStatus("idle");
+        alert("Oops! There was a problem submitting your form");
+      }
+    } catch (error) {
+      setStatus("idle");
+      alert("Oops! There was a problem submitting your form");
+    }
   };
 
   return (

@@ -1,3 +1,4 @@
+import { BarChart2, Filter } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 
@@ -7,7 +8,9 @@ interface SkillItem {
   lightColor?: string;
   darkColor?: string;
   emoji?: string;
+  symbolColor?: string;
   useGithubAvatar?: boolean;
+  icon?: string;
 }
 
 interface SkillGroupData {
@@ -19,7 +22,7 @@ interface SkillGroupData {
 const SKILL_GROUPS: SkillGroupData[] = [
   {
     group: "AI & Agent Systems",
-    tags: ["Multi-Agent Systems", "RAG Pipelines", "Agentic AI"],
+    tags: [],
     skills: [
       {
         name: "LangChain",
@@ -57,15 +60,13 @@ const SKILL_GROUPS: SkillGroupData[] = [
       },
       {
         name: "OpenAI",
-        slug: "openai",
-        lightColor: "000000",
-        darkColor: "FFFFFF",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/OpenAI_Logo.svg/512px-OpenAI_Logo.svg.png",
       },
     ],
   },
   {
     group: "ML / Deep Learning",
-    tags: ["Feature Engineering", "Model Evaluation", "NLP"],
+    tags: [],
     skills: [
       {
         name: "Scikit-learn",
@@ -114,12 +115,11 @@ const SKILL_GROUPS: SkillGroupData[] = [
         lightColor: "3776AB",
         darkColor: "3776AB",
       },
-      { name: "Feature Engineering" },
     ],
   },
   {
     group: "Programming & Backend",
-    tags: ["REST APIs", "Core Foundations"],
+    tags: [],
     skills: [
       {
         name: "Python",
@@ -143,7 +143,7 @@ const SKILL_GROUPS: SkillGroupData[] = [
   },
   {
     group: "Dev Tools",
-    tags: ["Version Control", "Deployment"],
+    tags: [],
     skills: [
       { name: "Git", slug: "git", lightColor: "F05032", darkColor: "F05032" },
       {
@@ -174,14 +174,14 @@ const SKILL_GROUPS: SkillGroupData[] = [
   },
   {
     group: "Generative AI",
-    tags: ["Prompt Engineering", "LLMs", "Orchestration"],
+    tags: [],
     skills: [
-      { name: "Generative AI", emoji: "✦" },
-      { name: "RAG", emoji: "⬡" },
-      { name: "Agentic AI", emoji: "◈" },
-      { name: "Multi-Agent Orchestration", emoji: "⊕" },
-      { name: "Prompt Engineering", emoji: "◉" },
-      { name: "LLMs", emoji: "⬟" },
+      { name: "Generative AI", emoji: "✦", symbolColor: "text-indigo-500" },
+      { name: "RAG", emoji: "⬡", symbolColor: "text-violet-500" },
+      { name: "Agentic AI", emoji: "◈", symbolColor: "text-purple-500" },
+      { name: "Multi-Agent Orchestration", emoji: "⊕", symbolColor: "text-indigo-400" },
+      { name: "Prompt Engineering", emoji: "◉", symbolColor: "text-violet-400" },
+      { name: "LLMs", emoji: "⬟", symbolColor: "text-purple-400" },
     ],
   },
 ];
@@ -365,7 +365,14 @@ export default function Skills() {
                     key={skill.name}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/60 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-200 dark:hover:border-indigo-800 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all duration-200 cursor-default group"
                   >
-                    {skill.useGithubAvatar ? (
+                    {skill.icon ? (
+                      <img
+                        src={skill.icon}
+                        alt={skill.name}
+                        className="w-4 h-4 dark:invert"
+                        loading="lazy"
+                      />
+                    ) : skill.useGithubAvatar ? (
                       <img
                         src={GROQ_AVATAR}
                         alt={skill.name}
@@ -385,7 +392,7 @@ export default function Skills() {
                         loading="lazy"
                       />
                     ) : skill.emoji ? (
-                      <span className="text-indigo-500 text-xs font-bold w-4 text-center leading-none">
+                      <span className={`text-xs font-bold w-4 text-center leading-none ${skill.symbolColor || "text-indigo-500"}`}>
                         {skill.emoji}
                       </span>
                     ) : (
@@ -397,16 +404,25 @@ export default function Skills() {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                {group.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              {group.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                  {group.tags.map((tag) => {
+                    const tagIcons: Record<string, React.ReactNode> = {
+                      "Data Preprocessing": <Filter className="w-3 h-3" />,
+                      "Visualization": <BarChart2 className="w-3 h-3" />,
+                    };
+                    return (
+                      <span
+                        key={tag}
+                        className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400"
+                      >
+                        {tagIcons[tag]}
+                        {tag}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

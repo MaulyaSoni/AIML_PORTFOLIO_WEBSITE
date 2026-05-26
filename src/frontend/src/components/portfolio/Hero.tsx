@@ -1,118 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Code2, Trophy, Award } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
+import { useDarkMode } from "../../hooks/useDarkMode";
 
 const ROLES = [
   "AI/ML Engineer",
   "Generative AI Developer",
-  "Full Stack Builder",
-  "Multi-Agent Systems",
+  "Cloud Computing Enthusiast",
+  "Multi-Agent Systems Builder",
 ];
-
-const STATS = [
-  {
-    value: 7,
-    suffix: "+",
-    decimals: 0,
-    label: "Projects Built",
-    color: "from-indigo-500 to-violet-500",
-  },
-  {
-    value: 96.5,
-    suffix: "%",
-    decimals: 1,
-    label: "Best Model Accuracy",
-    color: "from-violet-500 to-purple-600",
-  },
-  {
-    value: 3,
-    suffix: "",
-    decimals: 0,
-    label: "Certifications",
-    color: "from-blue-500 to-indigo-500",
-  },
-  {
-    value: 2,
-    suffix: "x",
-    decimals: 0,
-    label: "Hackathon Finalist",
-    color: "from-purple-500 to-pink-500",
-  },
-];
-
-function StatCard({
-  value,
-  suffix,
-  decimals,
-  label,
-  color,
-  index,
-}: {
-  value: number;
-  suffix: string;
-  decimals: number;
-  label: string;
-  color: string;
-  index: number;
-}) {
-  const [count, setCount] = useState(0);
-  const [inView, setInView] = useState(false);
-
-  return (
-    <motion.div
-      onViewportEnter={() => setInView(true)}
-      viewport={{ once: true }}
-      data-ocid={`hero.stat.${index + 1}`}
-      className="flex flex-col items-center gap-1 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-    >
-      <CountUp
-        target={value}
-        suffix={suffix}
-        run={inView}
-        onUpdate={setCount}
-      />
-      <span
-        className={`font-display font-black text-3xl bg-gradient-to-r ${color} bg-clip-text text-transparent`}
-      >
-        {decimals > 0 ? count.toFixed(decimals) : Math.floor(count)}
-        {suffix}
-      </span>
-      <span className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 font-medium">
-        {label}
-      </span>
-    </motion.div>
-  );
-}
-
-function CountUp({
-  target,
-  run,
-  onUpdate,
-}: {
-  target: number;
-  suffix: string;
-  run: boolean;
-  onUpdate: (v: number) => void;
-}) {
-  useEffect(() => {
-    if (!run) return;
-    const duration = 1500;
-    const start = performance.now();
-    let raf: number;
-    function tick(now: number) {
-      const elapsed = Math.min((now - start) / duration, 1);
-      const eased = 1 - (1 - elapsed) ** 3;
-      onUpdate(eased * target);
-      if (elapsed < 1) raf = requestAnimationFrame(tick);
-    }
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [run, target, onUpdate]);
-  return null;
-}
 
 export default function Hero() {
+  const { isDark } = useDarkMode();
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -145,14 +45,15 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16"
+      className="py-16 md:py-20 flex items-center justify-center relative overflow-hidden bg-white dark:bg-[#09090B] transition-colors duration-300"
       style={{
-        background: `
-          radial-gradient(ellipse 80% 60% at 20% 0%, rgba(99,102,241,0.18) 0%, transparent 60%),
-          radial-gradient(ellipse 60% 50% at 80% 10%, rgba(139,92,246,0.15) 0%, transparent 55%),
-          radial-gradient(ellipse 40% 30% at 50% 80%, rgba(59,130,246,0.10) 0%, transparent 50%),
-          #FAFAFA
-        `,
+        background: isDark
+          ? `radial-gradient(ellipse 80% 60% at 20% 0%, rgba(99,102,241,0.22) 0%, transparent 60%),
+             radial-gradient(ellipse 60% 50% at 80% 10%, rgba(139,92,246,0.18) 0%, transparent 55%),
+             #09090B`
+          : `radial-gradient(ellipse 80% 60% at 20% 0%, rgba(99,102,241,0.15) 0%, transparent 60%),
+             radial-gradient(ellipse 60% 50% at 80% 10%, rgba(139,92,246,0.12) 0%, transparent 55%),
+             #FAFAFA`
       }}
     >
       {/* Animated gradient blobs */}
@@ -169,7 +70,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-200 bg-indigo-50 dark:bg-indigo-950/30 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-sm font-medium">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-sm font-medium">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500" />
@@ -183,16 +84,22 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-display font-black text-5xl sm:text-6xl md:text-7xl leading-none tracking-tighter"
-            style={{
-              background:
-                "linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #2563EB 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
+            className="font-black tracking-tight leading-none text-center"
           >
-            SONI MAULYA M
+            <span
+              className="block text-5xl md:text-7xl lg:text-8xl"
+              style={{
+                background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #6366F1 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              Maulya Soni
+            </span>
+            {/* <span className="block text-3xl md:text-4xl lg:text-5xl text-zinc-400 dark:text-zinc-500 font-light tracking-widest mt-1">
+              M.
+            </span> */}
           </motion.h1>
 
           {/* Typewriter role */}
@@ -202,7 +109,7 @@ export default function Hero() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="h-10 flex items-center justify-center"
           >
-            <span className="font-display font-semibold text-xl sm:text-2xl text-muted-foreground">
+            <span className="font-display font-semibold text-xl sm:text-2xl text-zinc-500 dark:text-zinc-400">
               {displayed}
               <span className="inline-block w-0.5 h-6 bg-primary ml-0.5 align-middle animate-blink" />
             </span>
@@ -213,10 +120,10 @@ export default function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="max-w-xl text-muted-foreground text-base sm:text-lg leading-relaxed"
+            className="max-w-xl text-zinc-600 dark:text-zinc-400 text-base sm:text-lg leading-relaxed"
           >
-            Building intelligent systems that bridge AI research and real-world
-            impact.
+            Building intelligent systems at the intersection of AI/ML and cloud infrastructure.<br/>
+            Specialized in LLMs, RAG pipelines, and agentic AI.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -238,9 +145,9 @@ export default function Hero() {
               variant="outline"
               asChild
               data-ocid="hero.resume_button"
-              className="border-border hover:border-primary/50 hover:bg-primary/5 px-7 py-2.5 rounded-xl font-medium transition-all duration-200"
+              className="border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-200 bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 px-7 py-2.5 rounded-xl font-medium transition-all duration-200"
             >
-              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+              <a href="/assets/ML_RESUME.pdf" download="ML_RESUME.pdf" target="_blank" rel="noopener noreferrer">
                 Download Resume
               </a>
             </Button>
@@ -259,7 +166,7 @@ export default function Hero() {
               rel="noopener noreferrer"
               aria-label="GitHub"
               data-ocid="hero.github_link"
-              className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted border border-border hover:border-primary/30 transition-all duration-200 hover:-translate-y-0.5"
+              className="p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <Github className="w-5 h-5" />
             </a>
@@ -269,7 +176,7 @@ export default function Hero() {
               rel="noopener noreferrer"
               aria-label="LinkedIn"
               data-ocid="hero.linkedin_link"
-              className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted border border-border hover:border-primary/30 transition-all duration-200 hover:-translate-y-0.5"
+              className="p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <Linkedin className="w-5 h-5" />
             </a>
@@ -277,7 +184,7 @@ export default function Hero() {
               href="mailto:maulyasoni.it@gmail.com"
               aria-label="Email"
               data-ocid="hero.email_link"
-              className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted border border-border hover:border-primary/30 transition-all duration-200 hover:-translate-y-0.5"
+              className="p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-200"
             >
               <Mail className="w-5 h-5" />
             </a>
@@ -288,19 +195,31 @@ export default function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 w-full max-w-2xl"
+            className="flex flex-wrap items-center justify-center gap-3 mt-6"
           >
-            {STATS.map((stat, i) => (
-              <StatCard
-                key={stat.label}
-                value={stat.value}
-                suffix={stat.suffix}
-                decimals={stat.decimals}
-                label={stat.label}
-                color={stat.color}
-                index={i}
-              />
-            ))}
+            {/* Location */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 border-0 text-sm">
+              <MapPin className="w-3.5 h-3.5" />
+              Nadiad, Gujarat
+            </div>
+
+            {/* Projects */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300 text-sm font-medium">
+              <Code2 className="w-3.5 h-3.5" />
+              7+ Projects
+            </div>
+
+            {/* Hackathon */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-300 text-sm font-medium">
+              <Trophy className="w-3.5 h-3.5" />
+              2× National Hackathon Finalist
+            </div>
+
+            {/* NPTEL */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-300 text-sm font-medium">
+              <Award className="w-3.5 h-3.5" />
+              NPTEL Certified
+            </div>
           </motion.div>
         </div>
       </div>

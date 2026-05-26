@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import type { Project } from "../../types/portfolio";
 
@@ -14,6 +14,17 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
 ];
 
 const PROJECTS: Project[] = [
+  {
+    id: "insureiq",
+    title: "InsureIQ",
+    description: "Production-grade insurance intelligence platform combining XGBoost claim prediction, SHAP explainability, and a 4-node LangGraph multi-agent pipeline. Underwriters get automated risk scoring, plain-language explanations, premium advisory, and a PDF report — all in seconds.",
+    tags: ["Generative AI"],
+    techPills: ["LangGraph", "XGBoost", "SHAP", "Groq API", "FastAPI", "React", "Python"],
+    category: "genai",
+    githubUrl: "https://github.com/MaulyaSoni/InsureIQ",
+    liveUrl: "https://insure-iq-com.vercel.app/",
+    badge: "AUC 0.74",
+  },
   {
     id: "phishing",
     title: "Phishing Email Detection System",
@@ -118,8 +129,8 @@ export default function Projects() {
               data-ocid={`projects.filter_${tab.key}`}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 activeFilter === tab.key
-                  ? "bg-primary text-primary-foreground shadow-subtle"
-                  : "bg-card text-muted-foreground border border-border hover:border-primary/40 hover:text-foreground"
+                  ? "bg-indigo-600 dark:bg-indigo-500 text-white"
+                  : "border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               }`}
             >
               {tab.label}
@@ -128,50 +139,64 @@ export default function Projects() {
         </div>
 
         {/* Grid */}
-        <motion.div
-          className="grid sm:grid-cols-2 gap-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
-        >
-          {filtered.map((project, i) => (
-            <motion.div
-              key={project.id}
-              variants={{
-                hidden: { opacity: 0, y: 24 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-              }}
-              data-ocid={`projects.item.${i + 1}`}
-              className="group flex flex-col p-6 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+        <motion.div layout className="grid sm:grid-cols-2 gap-6">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((project, i) => (
+              <motion.div
+                layout
+                key={project.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                data-ocid={`projects.item.${i + 1}`}
+                className={`group flex flex-col p-6 rounded-2xl bg-white dark:bg-zinc-900 border transition-all duration-300 ${
+                project.id === "insureiq"
+                  ? "border-emerald-200 dark:border-emerald-800/50 hover:shadow-[0_8px_30px_rgba(16,185,129,0.10)] dark:hover:shadow-[0_8px_30px_rgba(16,185,129,0.12)] hover:-translate-y-1 md:col-span-1"
+                  : "border-zinc-200 dark:border-zinc-800 shadow-sm dark:shadow-none hover:border-zinc-300 dark:hover:border-zinc-700 hover:-translate-y-1"
+              }`}
             >
               <div className="flex items-start justify-between gap-3 mb-3">
-                <h3 className="font-display font-semibold text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
+                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 leading-tight group-hover:text-primary transition-colors duration-200">
                   {project.title}
                 </h3>
                 {project.badge && (
-                  <Badge className="shrink-0 bg-primary/10 text-primary border-primary/20 text-xs whitespace-nowrap">
+                  <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap ${
+                    project.id === "insureiq" 
+                      ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+                      : "bg-green-50 dark:bg-green-950/50 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800"
+                  }`}>
                     {project.badge}
-                  </Badge>
+                  </span>
                 )}
               </div>
 
+              {project.id === "insureiq" && (
+                <p className="text-xs text-zinc-500 dark:text-zinc-500 mb-3 font-medium">
+                  AI-Powered Vehicle Insurance Risk Analytics
+                </p>
+              )}
+
               {/* Category tag */}
               <div className="flex flex-wrap gap-1.5 mb-3">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/10 text-secondary font-medium"
-                  >
-                    {tag}
-                  </span>
-                ))}
+                {project.tags.map((tag) => {
+                  let tagColor = "bg-secondary/10 text-secondary";
+                  if (tag === 'Machine Learning') tagColor = "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400";
+                  if (tag === 'Generative AI') tagColor = "bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400";
+                  if (tag === 'Web Dev') tagColor = "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400";
+                  
+                  return (
+                    <span
+                      key={tag}
+                      className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${tagColor}`}
+                    >
+                      {tag}
+                    </span>
+                  );
+                })}
               </div>
 
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4 flex-1">
                 {project.description}
               </p>
 
@@ -180,7 +205,7 @@ export default function Projects() {
                 {project.techPills.map((pill) => (
                   <span
                     key={pill}
-                    className="font-mono text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground border border-border/60"
+                    className="font-mono text-xs px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium"
                   >
                     {pill}
                   </span>
@@ -188,7 +213,7 @@ export default function Projects() {
               </div>
 
               {/* Action links */}
-              <div className="flex items-center gap-4 pt-3 border-t border-border/60">
+              <div className="flex items-center gap-4 pt-3 border-t border-zinc-200 dark:border-zinc-800 mt-auto">
                 {project.githubUrl && (
                   <a
                     href={project.githubUrl}
@@ -196,9 +221,9 @@ export default function Projects() {
                     rel="noopener noreferrer"
                     aria-label={`GitHub: ${project.title}`}
                     data-ocid={`projects.github.${i + 1}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
+                    className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                   >
-                    <Github className="w-3.5 h-3.5" />
+                    <Github className="w-4 h-4" />
                     GitHub
                   </a>
                 )}
@@ -209,15 +234,16 @@ export default function Projects() {
                     rel="noopener noreferrer"
                     aria-label={`Live demo: ${project.title}`}
                     data-ocid={`projects.live.${i + 1}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors duration-200"
+                    className="flex items-center gap-1.5 text-sm text-indigo-500 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <ExternalLink className="w-4 h-4" />
                     {project.liveUrl ? "Live Demo" : "View Demo"}
                   </a>
                 )}
               </div>
             </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>
